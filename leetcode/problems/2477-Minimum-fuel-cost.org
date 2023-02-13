@@ -1,0 +1,214 @@
+* 2477. Minimum Fuel Cost to Report to the Capital
+
+** Description
+
+There is a tree (i.e., a connected, undirected graph with no cycles) structure
+country network consisting of ~n~ cities numbered from ~0~ to ~n-1~ and exactly
+~n-1~ roads. The capital city is city ~0~. You are given a 2D integer array
+~roads~ where ~roads[i] = [a_i, b_i]~ denoted that there exists a *bidirectional
+road* connecting cities ~a_i~ and ~b_i~.
+
+There is a meeting for the representatives of each city. The meeting is in the
+capital city. There is a car in each city. You are given an integer ~seats~ that
+indicates the number of seats in each car. A representative can use the car in
+their city to travel or change the car and ride with another representative. The
+cost of traveling between two cities is one liter of fuel.
+
+Return /the minimum number of liters of fuel to reach the capital city/.
+
+** Solutions
+
+*** BFS and Level traversals
+
+**** Explanation
+
+We're given a list of edges, with these edges we have to /recreate/ the tree
+that will be used to traverse all the cities in a certain order. There are
+multiple ways to do the previous, for example we could define a matrix of size
+~n * n~ that represents the adjacency matrix of our tree. However, as we only
+really care about the neighbors of each city, there is another useful
+representation that we can use, sets. We traverse each edge found on ~roads~ and
+for each pair ~(x, y)~ we add ~y~ to the set of neighbors of ~x~, and viceversa.
+The following code does the previous:
+
+#+BEGIN_SRC python
+  neighbors = defaultdict(set)
+  for (x, y) in roads:
+      neighbors[x].add(y)
+      neighbors[y].add(x)
+#+END_SRC
+
+Now we have a proper way to determine in constant time /amortized/ who are the
+neighbors of any vertex ~v~. With this information we can perform a *BFS*
+traversal with the capital city as the root of the tree to define the
+~parenthood~ mapping of this tree, so that for each vertex we have a clear path
+to the capital city. And also group the vertices of the tree by its distance to
+the root.
+
+So, we need to define the parenthood mapping. For each vertex, except the root
+~0~, the following function determines the parenthood map performing a BFS:
+
+#+BEGIN_SRC python
+  parenthood = {}
+  queue = deque([0])
+
+  while len(queue) > 0:
+      x = queue.popleft()
+
+      for y in neighbors[x]:
+	  if x == 0 or y != parenthood[x]:
+	      parenthood[y] = x
+	      queue.append(y)
+#+END_SRC
+
+As we also want to group vertices by its distance to the root. We can do that
+while performing the previous BFS traversal:
+
+#+BEGIN_SRC python
+  parenthood = {}
+  levels = defaultdict(list)
+  at_level = {}
+
+  queue = deque([0])
+  at_level[0] = 0
+
+  while len(queue) > 0:
+      x = queue.popleft()
+
+      for y in edges[x]:
+	  if x == 0 or y != parenthood[x]:
+	      parenthood[y] = x
+	      queue.append(y)
+
+	      at_level[y] = at_level[x] + 1
+	      levels[at_level[x] + 1].append(y)
+#+END_SRC
+
+As we have ~n~ cities, and for each city there is one representative,
+then we can represent the amount of representatives in each city as an array of
+size ~n~. This way, initially our array can be seen like this:
+
+|----------------------+---+---+---+---+---+-----+---|
+| City                 | 0 | 1 | 2 | 3 | 4 | ... | n |
+|----------------------+---+---+---+---+---+-----+---|
+| Num. Representatives | 1 | 1 | 1 | 1 | 1 | ... | 1 |
+|----------------------+---+---+---+---+---+-----+---|
+
+So, let's say that the representative of the city ~3~ moves to the city ~1~,
+then our array should reflect this the following way.
+
+|----------------------+---+---+---+---+---+-----+---|
+| City                 | 0 | 1 | 2 | 3 | 4 | ... | n |
+|----------------------+---+---+---+---+---+-----+---|
+| Num. Representatives | 1 | 2 | 1 | 1 | 1 | ... | 1 |
+|----------------------+---+---+---+---+---+-----+---|
+
+So now, there are two representatives in the city ~1~. We can define the
+previous array with:
+
+#+begin_src python
+  repr_in_city = [1 for _ in range(len(roads) + 1)]
+#+end_src
+
+Finally, we move from the furtherst level to the nearest. That is we move all
+the representative on the ~i~-th level to the ~(i-1)~-th level, and eventually
+we will have all the representatives on the ~0~-th. In this step we can also
+determine the amount of fuel needed to move the representatives of one city to
+another, this amount is determined with the following calculation:
+
+#+begin_src python
+  litters_needed = int(ceil(num_persons / seats))
+#+end_src
+
+The final step then is to traverse all levels, move the representatives to the
+next level, and determine the amount of fuel used so far. The following code
+does the previous:
+
+#+begin_src python
+    total_litters = 0
+    for l in range(len(levels), 0, -1):
+	for x in levels[l]:
+	    # Amount of litters needed to move the current representatives.
+	    num_persons = repr_in_city[x]
+	    litters_needed = int(ceil(num_persons / seats))
+	    total_litters += litters_needed
+
+	    # Move the current representatives to the next city.
+	    parent = parenthood[x]
+	    repr_in_city[parent] += num_persons
+#+end_src
+
+**** Complexity Analysis
+
+The algorithm can be reduced to the following steps:
+1. Build the graph.
+2. Build the level and parenthood map.
+3. Determine the fuel needed.
+
+For the first step, we traverse only one time the list of edges to build said
+graph. For each pair ~(x, y)~ we add ~x~ to set of neighbors of ~y~, and
+viceversa. As a tree always has ~n-1~ edges, then the time it takes to build the
+graph is ~O(n)~.
+
+For the second step, we perform a BFS traversal to build the ~parenthood~ and
+~levels~ map, so we traverse all the vertices and also the edges, taking a total
+of ~O(n + n - 1) = O(2n -1) = O(n)~.
+
+Finally, for the third step, we traverse all the levels, from bot to top to
+determine the amount of fuel needed. Once again, we traverse all the vertices
+and edges of the graph, resulting in ~O(n + n - 1) = O(n)~ time.
+
+In total, we perform three different traversals on the tree, resulting in ~O(6n)
+= O(n)~ time.
+
+For the space analysis, we use the maps ~neighbors~, ~parenthood~, ~at_level~,
+~levels~. They contain all the vertices of the graph, be it as key or value, so
+the space needed is ~O(4n) = O(n)~.
+
+**** Code
+
+#+begin_src python
+  # Determine the neighbor of each vertex.
+  neighbors = defaultdict(set)
+  for (x, y) in roads:
+      neighbors[x].add(y)
+      neighbors[y].add(x)
+
+  # Perform a BFS traversal to determine the parenthood mapping and group
+  # the cities by the distance they have to the capital.
+  parenthood = {}
+  levels = defaultdict(list)
+  at_level = {}
+
+  queue = deque([0])
+  at_level[0] = 0
+  while len(queue) > 0:
+      x = queue.popleft()
+
+      for y in edges[x]:
+	  if x == 0 or y != parenthood[x]:
+	      parenthood[y] = x
+	      queue.append(y)
+
+	      at_level[y] = at_level[x] + 1
+	      levels[at_level[x] + 1].append(y)
+
+  # Number of representatives in each city.
+  repr_in_city = [1 for _ in range(len(roads) + 1)]
+
+  # Move all the representatives to the capital and determine the amount of 
+  # litters needed.
+  for l in range(len(levels), 0, -1):
+      # Move the representatives of the current level to the next level.
+      for x in levels[l]:
+	  # Determine the amount of litters needed for the transportation.
+	  num_persons = repr_in_city[x]
+	  litters_needed = int(ceil(num_persons / seats))
+	  total_litters += litters_needed
+
+	  # Move the representatives to the parent city.
+	  parent_city = parenthood[x]
+	  repr_in_city[parent_city] += num_persons
+
+  return total_litters
+#+end_src
