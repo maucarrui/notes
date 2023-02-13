@@ -1,0 +1,175 @@
+* Introduction
+
+** Initial Definitions
+
+*** The Buffer
+
+As /Mastering Emacs/ states, most text editors are *file based*, that is, all of
+the actions related to the IDE are done with or to files. In Emacs, files are
+buffers, but not all buffers are files. We could understand a *buffer* as a
+temporal file, it isn't saved on memory until we say so and it can behave on
+different ways. For example, a buffer can be for editing text (like a file), but
+it can also act like an I/O device and talk to another process, or show the
+compilation process of a program, or even view a PDF inside Emacs.
+
+*** Window and Frames
+
+When a buffer is displayed on the screen, it is displayed on a
+*window*. Contrary to public opinion, the window does not relate to the portion
+of the screen regarding Emacs, the previous would be the *frame*. This way, we
+can have multiple windows but we will always have only one frame per instance of
+the program; if we're executing Emacs only one time, then we will only have one
+frame always.
+
+*** Modeline, Echo Area, and Minibuffer
+
+Emacs uses the *modeline* to communicate facts about the buffer you're in. The
+modeline usually looks like this:
+
+#+BEGIN_SRC
+  -UUU:**F3 <buffer-name> All L4 (<buffer-type>) --
+#+END_SRC
+
+All sorts of information can be displayed in the modeline: laptop battery power,
+the current function or class you're in, what source control revision or branch
+you're using, and much more.
+
+The *minibuffer* is directly below the modeline, and it is where errors and
+general information are shown. For example if we type =M-x= we will observe that
+a little input appears below the modeline, that's the minibuffer.
+
+The echo area and the minibuffer share the same spot on the screen. The
+minibuffer is nearly identical to a normal buffer, you can use editing commands,
+and the one line minibuffer will expand to multiple lines if neccesary. Usually,
+the minibuffer is the way you communicate with Emacs. It supports a variaty of
+complex completitions mechanisms to help you fin what you need and is a tool you
+will probably use often.
+
+*** The Point and Mark
+
+The *point* is just another word for the /caret/ or /cursor/. The point itself
+is your current position in a buffer, it is usally represented by the character
+█ (the rectangle). Each buffer tracs the position of the point separately, so if
+you switch buffers the location of each point is remembered separately.
+
+The point, in Emacs, has more utility than just acting as a visual marker for
+where characters you type end up on the screen. It is also one part of a duo
+called the *point* and *mark*. This duo represents the boundary for a *region*,
+which is a contagious block of text, usally, in the current buffer. In other
+editors, this is also known as the *highlight*, just think of points and marks
+as the beginning and end of a region.
+
+*** Killing, Yanking and CUA
+
+The first deviation an Emacs users will find is the clipboard system. Usually,
+the *Cut, Copy and Paste* are known as ~Ctrl+x~, ~Ctrl+c~ and ~Ctrl+v~. In
+Emacs, these keys and terminology differ. *Killing* is cutting, *yanking* is
+pasting, and copying is known as *saving to the kill ring*.
+
+The reasons, as before, are historical. Most of the keys and terminology stem
+from IBM's Common User Acess and Apple; however, as Emacs appeared before the
+previous, the terminology and standards have already been settled.
+
+*** .emacs.d, init.el, and .emacs
+
+Historically, emacs settings are kept in a file called =.emacs=, but most keep
+their customization in =~/.emacs.d/init.el= on Linux. Since Emacs nowadays write
+several more files to your system, they are kept in a directory called
+=.emacs.d= to avoid cluttering your home directory. So, when people talk about
+their /init file/, or their /.emacs file/, or if they tell you to put something
+in said file, that's what they're referring to.
+
+*** Major and Minor Modes
+
+*Major modes* control how buffers behave. So, if you want to edit Python code
+and you visit a file in Emacs called =example.py=, then Emacs will know through
+a centralized register that maps file extensions to major modes, that this is a
+Python file, and it should use the /Python major mode/. Each buffer will always
+have a major mode. The major mode may be basic and offer no font locking (also
+known as /syntax higlighting/) and no specific functionality; or it may be the
+complete opposite and introduce font locking, advanced indentation, and
+specialized commands. It's important to remember that each buffer can have just
+one major mode.
+
+*Minor modes*, by contrast, are typically optional add-ons that you enable for
+some (or all) buffers. One example is /flyspell-mode/, a minor mode that spell
+checks text as you write.
+
+The major mode is always displayed in the modeline. Some minor modes are also
+displayed in the modeline, but usally only the ones that alter the buffer or
+interact with it in some way.
+
+
+** First Steps
+
+*** Starting Emacs
+
+Starting Emacs is as simple as running =emacs= from the command line. If you run
+the command from a window manager, then Emacs will launch as GUI Emacs, as
+opposed to Terminal Emacs where Emacs is running inside a terminal.
+
+There's a host of command line switches you can pass to Emacs, but you only need
+four to get started:
+
+| Switch | Purpose                                                              |
+| --help | Display help                                                         |
+| -nw    | Forces Emacs to run in terminal mode                                 |
+| -q     | Does not load an init file                                           |
+| -Q     | Does not load the site-wide startup file; init file nor X resources. |
+|        |                                                                      |
+
+If Emacs is giving you error messages when you start it, you can use =-q= to
+prevent your init file from loading. If that fixes erros, then you have a broken
+init file and fix that.
+
+The Emacs binary follows the usal command line convention:
+
+#+BEGIN_SRC
+  emacs [switches] [file1, file2, ...]
+#+END_SRC
+
+The Emacs way is to keep it running and do all your editing in a dedicated Emacs
+instance. Emacs will typically stat slowe than other editors as it has a lot
+more packages and features and as it's designed for long-running sessions and
+not quick-edits.
+
+*** The Emacs Interface
+
+When you first launch Emacs, you're greeted with the /splash screen/. It's
+probably on of the first thing Emacs hackers disable, along with scroll bars,
+the menu and the tool bar. However, unit you're comfortable with Emacs, you
+should keep the UI elements. If you're using Emacs in the Terminal, you can
+still access the menu bar by pressing =F10=.
+
+*** Keys
+
+The most important subject in Emacs. Emacs is famour for two things: its obscure
+keyboard incantations and that it's the kitchen sink editor that can do
+everything. Nevertheless, key modifiers are a big part of day-to-day Emacs use,
+so being able to "decode" a string of keys is important. In Emacs, there are
+several modifier keys you can use, each with its own character:
+
+| Modifier | Full Name                      |
+| C-       | Control                        |
+| M-       | Meta ("Alt" on most keyboards) |
+| S-       | Shift                          |
+
+Two more exist for historial reasons: Super and Hyper. But don't have dedicated
+keys on today's keyboards, but for consistency still exist internally. Another
+key, Alt, /does/ exist on modern keyboards but is bound and known by as Meta in
+Emacs:
+
+| Modifier | Full Name |
+| s-       | Super     |
+| H-       | Hyper     |
+| A-       | Alt       |
+
+Super and Hyper can still be used if you have a Microsoft Windows compatible
+keyboard or use a programmable keyboard with the Start and Application Context
+buttons.
+
+In Emacs, we formally define a *key sequence* to mean a sequence of keyboard
+actions and a *complete key* to mean one or more keyboard sequences that
+/invoke/ a command; if the sequence of keys are not a complete key, the you have
+a *prefix key*. And if the key sequence is not recognized by Emacs at all, it is
+invalid, and an error is displayed in the echo area.

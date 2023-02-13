@@ -1,0 +1,63 @@
+* Preface
+
+** About the Notes
+
+The notes are written as plain text so you can read them anywhere. However,
+they're presented as a *.org* file, which stands for an *org-mode* file. This
+means that the best way to read this notes is on an editor which accepts this
+kind of format; for example, Emacs.
+
+** My Relationship with Emacs
+
+If you've haven't heard about Emacs, I wouldn't blame you. The editor is pretty
+old, its actually older than me. So why invest time in such an old editor?
+Specially when you there are newer and "cooler" options like Sublime Text,
++Atom+, Visual Studio Code, IntelliJ, among others; the list could probably go
+on for quite a while.
+
+In my personal opinion, most of the previous editors do a perfect job for what
+they're required to do. I would even recomend most of them if someone asked me
+about an editor to choose. However, these editors have a little detail that
+could be important for some, and its that these editors are not *open source*;
+with the exception of +Atom+, unfortunately this editor has been layed to rest.
+
+I know, some of you really don't mind about this detail. Why should I worry or
+not about the source code of my editor of choice? Depending on who you ask this
+question you may get different answers. For example, try asking this question on
+a forum on Arch Linux, and the same question on a forum on Apple and the answers
+will vary *greatly*. For the sake of simplicity, I'll just say that having an
+open source editor allows you to modify it /exactly/ the way you want it to
+behave. Would you like the text font to adapt to your screen size automatically?
+Done. Would you like to enable or disable key-bindings that do certain command?
+Done. You don't like the way the editor highlights the code and you think you
+can do it better? Go ahead. Having an open source editor basically means that it
+is *your* editor, *your* choices, and *your* benefits.
+
+However, I really didn't choose an open source editor for all of the previous
+reasons. Mine was quite simple. My old computer couldn't handle newer editors,
+that's it. My computer, as most computers nowadays, required to do multiple
+tasks at the same time, like compiling, executing, viewing web pages, writing
+code, and listening to music, all at the same time. My 4GB would explote if I
+were to do all the previous, and besides, the editor I was using at that time,
++Atom+ used to take like 30 seconds to load, which bothered me. So, in a moment
+of desesperation I moved to another editor.
+
+Finding a *great* editor is hard, but finding a *great* editor which happens to
+be open source is even harder. Not only are most of the options not open source,
+but some even cost *a lot* of money; if you happen to be a student (or someone
+who dislikes wasting money in something were you shouldn't) then unfortunately
+your options are greatly reduced. I only know two options for a powerful open
+source editor: Vi and Emacs.
+
+Vi and Emacs are comparable to Linux Distributions, there are so many Vi and
+Emacs distributions that you don't know which one to use. In the case of Vi,
+there is Vim, NeoVim. And for Emacs, there's GNU Emacs, Spacemacs, Doom Emacs,
+and so many more. You can actually search for them and see if any of them pick
+your interest; you'll be surprised to see how useful and "new" they look.
+
+In my case, I went for Emacs. I didn't know distributions existed so I went with
+the default installation. Its not that bad actually, it allows me to do exactly
+what I needed to do, which is to just write code. However Emacs is so *much*
+more than that, /or so they say/. This notes are exactly for that, to understand
+Emacs on a more profound way, and in the process build and design a powerful
+editor that may fit my requirements and desires.
