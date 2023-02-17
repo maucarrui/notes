@@ -1,0 +1,122 @@
+* 14. Longest Common Prefix
+
+** Description
+
+Write a function to find the longest common prefix string amongst an array of
+strings ~strs~. If there is no common prefix, return an empty string ~""~.
+
+*** Example 1
+
+~Input: ["flower", "flow", "flight"]~
+~Output: "fl"~
+
+*** Example 2
+
+~Input: strs = ["dog", "racecar", "car"]~
+~Output: ""~
+
+** Solutions
+
+*** Character by character traversals
+
+**** Explanation
+
+Given an array of strings, we can think of this array as 2D array of chars.
+For example, given the Example 1, we would have the following 2D array:
+
+|---+---+---+---+---+---|
+| f | l | o | w | e | r |
+|---+---+---+---+---+---|
+| f | l | o | w |   |   |
+|---+---+---+---+---+---|
+| f | l | i | g | h | t |
+|---+---+---+---+---+---|
+
+Our objective now to find the last column for which all string coincide. There
+is no need to always traverse all columns in search of the prefix, the longest a
+prefix can be is the length of the shortest string in the array. For example,
+given the Example 1, we only need to check the first four columns to find the
+longest prefix, there is no need to check the following columns.
+
+The following code returns the index for the column we're looking for.
+
+#+begin_src python
+  prefix_max_length = max(len(s) for s in strs)
+
+  found_prefix = False
+  col = -1
+  while col < prefix_max_length and not found_prefix:
+      for row in range(1, len(strs)):
+	  if strs[row][col + 1] != strs[row - 1][col + 1]:
+	      found_prefix = True
+	      break
+
+      if not found_prefix:
+	  col += 1
+#+end_src
+
+Explaining the previous code. We indicate that the current prefix is found on
+the ~-1~-th column, there is no ~-1~ column so this is an indicator that we
+haven't found a prefix yet. Traverse the matrix, column by column, and row by
+row. We place ourselves on the ~0~-th column and check if all rows have the same
+value, if they do, we move to the next column. If they don't, we determine that
+the previous column had the longest prefix, we do this by setting the
+~found_prefix~ flag to ~True~, and we break the for loop. While we haven't found
+the longest prefix and we're not on the last possible column, continue the
+previous. This will eventually get us the column we're looking for.
+
+So the rest is now to return the prefix, if the column is ~-1~ then there is no
+common prefix, otherwise pick any string in ~strs~ and return the first ~col~
+characters.
+
+#+begin_src python
+  if col == -1:
+      return ""
+  else:
+      return strs[0][0:col + 1]
+#+end_src
+
+There are some special cases that we can consider before doing all of this. If
+~strs~ is empty, then the prefix is always the empty string, likewise if ~strs~
+has only one string then the longest prefix is the string itself.
+
+**** Time and Space Complexity
+
+Given that in the worst case, when all the strings in ~strs~ are the same, we're
+traversing all of the characters of all the strings then the complexity is
+~O(l_total)~ where ~l_total~ is the sum of the lengths of all the strings.
+
+The space complexity of our algorithm is constant as we only define constants to
+keep track of the current row and column we're at, and also the
+~prefix_max_lenght~ and ~found_prefix~ variables.
+
+**** Code
+
+#+begin_src python
+  # Special cases.
+  if len(strs) == 0:
+      return ""
+  if len(strs) == 1:
+      return strs[0]
+
+  # Determine the maximum length the prefix can have.
+  prefix_max_length = max(len(s) for s in strs)
+
+  # Traverse the 2D array of chars to determine the range of the prefix.
+  found_prefix = False
+  col = -1
+  while col < prefix_max_length and not found_prefix:
+      for row in range(1, len(strs)):
+	  if strs[row][col + 1] != strs[row - 1][col + 1]:
+	      found_prefix = True
+	      break
+
+      if not found_prefix:
+	  col += 1
+
+  # Return the found prefix.
+  if col == -1:
+      return ""
+  else:
+      return strs[0][0:col + 1]
+#+end_src
