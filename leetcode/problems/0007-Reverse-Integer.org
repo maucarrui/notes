@@ -1,0 +1,95 @@
+* 7. Reverse Integer
+
+** Description
+
+Given a signed 32-bit integer ~x~ return ~x~ with its digits *reversed*. If
+reversing ~x~ causes the value to go outside the 32-bit integer range ~[2^31,
+2^31 - 1]~, then return ~0~.
+
+*** Example 1
+
+Input: ~x = 123~
+Output: ~321~
+
+*** Example 2
+
+Input: ~x = -123~
+Output: ~-321~
+
+** Solution
+
+*** Reversing the number digit by digit from right to left
+
+In this kind of exercises its important to remember the expanded form of a
+number, that is, to express a number by the sum of each digit multiplied by its
+place value. For example, if we have the number 123, then its expanded form is:
+
+|------+------+------|
+| 10^2 | 10^1 | 10^0 |
+|------+------+------|
+| 1    | 2    | 3    |
+|------+------+------|
+
+With this representation we can now access each digit of a number. To reverse
+the integer we have to access each digit and place it in the correct position.
+
+To access the last digit of the number we can simply apply the modulo operation
+~%~, for example, ~123 % 10 = 3~. After this, we can divide the number by ten to
+eliminate the number we just obtained, ~123 // 10 = 12~. Add the digit to a new
+variable ~y~ that will represent the reversed integer, and for each new digit,
+multiply ~y~ by ~10~ to add space for the new digit. And when the original
+number becomes ~0~ then we have processed all of the digits contained in the
+number.
+
+|------+-----+----------+-----------+-----|
+| Step | ~x~ | ~x % 10~ | ~x // 10~ | ~y~ |
+|------+-----+----------+-----------+-----|
+|    0 | 123 |        3 |        12 |   3 |
+|------+-----+----------+-----------+-----|
+|    1 |  12 |        2 |         1 |  32 |
+|------+-----+----------+-----------+-----|
+|    2 |   1 |        1 |         0 | 321 |
+|------+-----+----------+-----------+-----|
+
+Finally, to check if the reversed value is also negative or not, simply check if
+the original value was negative. Also, when we've obtained the reversed integer,
+check its within the 32-bit integer range.
+
+**** Complexity
+
+The amount of digits contained in a number ~n~ is ~log_10(n)~, as we have to
+traverse all of these digits, the time complexity of this algorithm is
+~O(log_10(n)~.
+
+The space complexity should be constant as the only variable we need is ~y~.
+
+**** Code
+
+#+begin_src python
+  # Temporal copy of the original value.
+  v = x
+
+  y = 0
+  while v > 0:
+      # Obtain the corresponding digit.
+      digit = v % 10
+
+      # Eliminate the last digit.
+      v = v // 10
+
+      # Append the digit to the reversed integer.
+      y = y * 10
+      y = y + digit
+
+  # If the original value was negative, then so is the reverse.
+  if x < 0:
+      y = -y
+
+  # Check if the reversed integer is within the range.
+  if (y > math.pow(2, 31) - 1) or (y < - math.pow(2, 31)):
+      return 0
+  else:
+      return y
+#+end_src
+
+
