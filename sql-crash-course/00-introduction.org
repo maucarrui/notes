@@ -1,0 +1,115 @@
+* SQL Crash Course - Introduction
+
+** The Relational Model
+
+*** A Brief Example
+
+In 1970, Dr. E. F. Codd of IBM's research published a papel titled "A Relational
+Model of Data for Large Shared Data Banks" that proposed that data be
+represented as sets of /tables/. The following example represent how to
+represent some client's bank accounts.
+
+|-------------+------------+-----------|
+| Customer ID | First Name | Last Name |
+|-------------+------------+-----------|
+|           1 | George     | Blake     |
+|           2 | Sue        | Smith     |
+|-------------+------------+-----------|
+
+|------------+----------------|
+| Product ID | Name           |
+|------------+----------------|
+| CHK        | Checking       |
+| SAV        | Savings        |
+| MM         | Money market   |
+| LOC        | Line of Credit |
+|------------+----------------|
+
+|------------+------------+-------------+---------|
+| Account ID | Product ID | Customer ID | Balance |
+|------------+------------+-------------+---------|
+|        103 | CHK        |           1 | $75.00  |
+|        104 | SAV        |           1 | $250.00 |
+|        105 | CHK        |           2 | $783.00 |
+|        106 | MM         |           2 | $500.00 |
+|        107 | LOC        |           2 | $0.00   |
+|------------+------------+-------------+---------|
+
+|----------------+------------------+------------+----------+------------|
+| Transaction ID | Transaction Type | Account ID | Amount   |       Date |
+|----------------+------------------+------------+----------+------------|
+|            978 | DBT              |        103 | $100.00  | 2004-01-22 |
+|            979 | CDT              |        103 | $25.00   | 2004-02-05 |
+|            980 | DBT              |        104 | $250.00  | 2004-03-09 |
+|            981 | DBT              |        105 | $1000.00 | 2004-03-25 |
+|----------------+------------------+------------+----------+------------|
+
+Each table in a relational database includes information that uniquely
+identifies a row in that table (known as the *primary key*), along with
+additional information needed to describe the entity completely. In the previous
+example, at the Customer Table, the /Customer ID/ column holds a different
+number for each customer. No other customer will ever be assigned the same
+identifier as other customer.
+
+*** Terminology
+
+An *entity* is something of interest to the database. In the previous example,
+this included customers, products, transactions, etc. A *column* is an
+individual piece of data stored in a table which is related to an entity. A
+*row* is a set of columns that together completely describe an entity or some
+action on an entity; it is also known as a *record*. A *table* is a set of rows,
+held either in memory (nonpersistent) or on a permanent state (persistent). The
+*result set* is another name for a /nonpersistent table/, generally the result
+of an SQL query. The *primary key* is the unique identifier for each row in the
+table, it can consist of one or more columns. Finally a *foreign key* is an
+identifier to locate a row on another table, it can consist of one or more
+columns.
+
+*** What is SQL?
+
+SQL is basically a language for manipulating the data found in relational
+tables. The SQL language is divided into several distinct parts: the *SQL schema
+statements*, which are used to define the data structures stored in the
+database; *SQL statements*, which are used to manipulate the data structures
+previously defined; and *SQL transaction statements*, which are used to begin,
+end and roll back transactions. For example, to create a new table in your
+database, you would use the SQL schema statement ~create table~, whereas the
+process of populating your new table with data would require the SQL data
+statement ~insert~.
+
+Here's an example of an SQL schema statement to create a table called
+~corporation~.
+
+#+begin_src sql
+      CREATE TABLE corporation
+             (corp_id SMALLINT,
+             name VARCHAR(30),
+             CONSTRAINT pk_corporation PRIMARY KEY (corp_id));
+#+end_src
+
+The previous statement creates a table with two columns, ~corp_id~ and ~name~,
+with the first column being the primary key for the rows of the table. Now
+here's an SQL statement to insert a row into the ~corporation~ table.
+
+#+begin_src sql
+  INSERT INTO corporation (corp_id, name)
+  VALUES (27, 'Acme Paper Corporation');
+#+end_src
+
+This statement adds a row to the corporation table with a value of ~27~ for the
+~corp_id~ column and a value of ~Acme Paper Corporation~ for the name column.
+
+Finally, here's a simple ~select~ statement to retrieve the data that was just
+created.
+
+#+begin_src sql
+  SELECT name FROM corporation WHERE corp_id = 27;
+#+end_src
+
+Executing the previous statement returns the following table:
+
+|------------------------|
+| name                   |
+|------------------------|
+| Acme Paper Corporation |
+|------------------------|
