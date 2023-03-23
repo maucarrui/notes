@@ -65,10 +65,14 @@ table, it can consist of one or more columns. Finally a *foreign key* is an
 identifier to locate a row on another table, it can consist of one or more
 columns.
 
-*** What is SQL?
+** What is SQL?
 
 SQL is basically a language for manipulating the data found in relational
-tables. The SQL language is divided into several distinct parts: the *SQL schema
+tables.
+
+*** SQL Statements
+
+The SQL language is divided into several distinct parts: the *SQL schema
 statements*, which are used to define the data structures stored in the
 database; *SQL statements*, which are used to manipulate the data structures
 previously defined; and *SQL transaction statements*, which are used to begin,
@@ -113,3 +117,90 @@ Executing the previous statement returns the following table:
 |------------------------|
 | Acme Paper Corporation |
 |------------------------|
+
+
+*** SQL Data Types
+
+In general, all popular database servers have the capacity to store the same
+types of data, such as strings, dates, and numbers. Where they typically differ
+is in the specialty data types, such as XML and JSON documents or spatial data.
+For these notes we will be exploring ~MySQL~ data types, in this case the
+character, date, and numeric data types.
+
+**** Character Data
+
+The character data can be stored as either fixed-length or variable-length
+strings; the difference is that fixed length strings are right-padded with
+spaces and always consume the same number of bytes, and variable length strings
+are not right-padded with spaces and don't always consume the number of bytes.
+
+When defining a character column, you must specify the maximum size of any
+string to be stored in the column. For example, if you want to store strings up
+to 20 characters in length, you could use either of the following definitions:
+
+#+begin_src sql
+  char(20)    /* fixed-length */
+  varchar(20) /* variable-length */
+#+end_src
+
+The maximum length for a ~char~ column is currently 255 bytes, whereas ~varchar~
+columns can be up to 65,535 bytes.
+
+**** Text data
+
+If you need to store longer strings that might exceed the 64KB limit for
+~varchar~ columns (such as emails, XML documents, etc.), then you will want to
+use one of the text types.
+
+|--------------+-------------------------|
+| Text type    | Maximum number of bytes |
+|--------------+-------------------------|
+| ~tinytext~   | 255                     |
+| ~text~       | 65,535                  |
+| ~mediumtext~ | 16,777,215              |
+| ~longtext~   | 4,294,967,295           |
+|--------------+-------------------------|
+
+There are some considerations to be taken when using the previous data types:
+
+- If the data exceeds the maximum size of the type, the data will be truncated.
+  
+- Trailing spaces will not be removed when data is loaded into the column.
+  
+- When sorting this data types, only the first 1024 bytes are considered, this
+  limit can be changed.
+
+- MySQL has different text types. SQL Server has a single ~text~ type for large
+  character data, whereas DB2 and Oracle use a data type called ~clob~ for
+  /Character Large Object/.
+
+**** Numeric Data
+
+The numeric data, contrary to popular opinion, may represent several things. For
+example, boolean types, a system-generated primary key for a transaction table,
+the amount of items in a shopping basket, or positional data, they may all be
+numeric data but they represent different things.
+
+To handle these data types, MySQL has several different numeric data types. the
+most commonly used numeric types are those used to store whole numbers, or
+/integers/. When specifying one of these types, you may also specify that the
+data is /unsigned/, which tells the server that all data stored in the column
+will be greater than or equal to zero.
+
+|-------------+---------------------------------+--------------------|
+| Type        | Signed Range                    | Unsigned Range     |
+|-------------+---------------------------------+--------------------|
+| ~tinyint~   | -128 to 127                     | 0 to 255           |
+| ~smallint~  | -32,768 to 32,767               | 0 to 65,535        |
+| ~mediumint~ | −8,388,608 to 8,388,607         | 0 to 16,777,215    |
+| ~int~       | −2,147,483,648 to 2,147,483,647 | 0 to 4,294,967,295 |
+| ~bigint~    | −2^63 to 2^63 - 1               | 0 to 2^64 - 1      |
+|-------------+---------------------------------+--------------------|
+
+Given an integer type, MySQL allocates an appropriate amount of space to store
+the data. There are also data types for floating numbers like ~float(p, s)~ and
+~double(p, s)~ where ~p~ is the number of digits the number before the decimal
+point has, and ~s~ is the number of digits the number of digits the number after
+the decimal point has. For example, ~float(4, 2)~ will be able to store numbers
+like 27.44 and 8.19, but the number 17.8675 would be rounded to 17.87, and the
+number 178.375 will return an error.
