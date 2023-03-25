@@ -1,0 +1,310 @@
+* Java Core Crash Course
+
+** Java Core Interview Questions
+
+*** Java Core Concepts
+
+1. What are some Object Oriented Paradigm Concepts in Java?
+
+   The following are considered some OOPS concepts that are in Java:
+   *Abstraction*, *encapsulation*, *polymorphism*, *inheritance*, *association*,
+   *aggregation*, and *composition*.
+
+2. What do you mean by platform independence of Java?
+
+   You can run the same Java Program in any Operating System and achieve the
+   same result. For example, you may write a java program in Linux and run it in
+   Windows.
+
+3. What is JVM?
+
+   JVM stands for *Java Virtual Machine*, its the heart of the java programming
+   language. It is the responsible for converting byte code into
+   machine-readable code. It provides an interface that doesn't depend on the
+   underlying operating system, and thus, *it is platform independent*.
+
+4. What is JDK?
+
+   JDK stands for *Java Development Kit* and it is for development purposes, it
+   provides all the tools, executables and binaries required to compile, debug
+   and execute a Java program.
+
+5. What is JRE?
+
+   JRE stands for *Java Runtime Environment* and it's the implementation of the
+   JVM. That is, JRE consists of JVM, java binaries, and other classes to
+   execute any program successfully. JRE doesn't contain any development tools
+   like JDK. If you want to execute any java program, you should have JRE
+   installed.
+
+6. What is the difference between JDK and JVM?
+
+   JDK is for developing and JVM is for executing java programs.
+
+7. What is the difference between JVM and JRE?
+
+   JRE is an implementation of JVM and its purpose is to execute any java
+   program.
+
+8. Which class is the superclass of all classes?
+
+   The class ~java.lang.Object~ is the root class for all the java classes, we
+   don't need to extend it.
+
+9. Does java support multiple inheritance?
+
+   No, it doesn't support multiple inheritance. Let's say we have three classes
+   ~A~, ~B~, and ~C~. If ~A~ extends ~B~ and ~C~, and ~B~ and ~C~ share a method
+   with the same name, then class ~A~ doesn't know from which class it should
+   take the method. This is known as the /Diamond Problem/.
+
+10. Is Java a pure Object Oriented Language?
+
+    No, it's not. It supports primitive types such as ~int~, ~byte~, ~short~,
+    ~long~, etc.
+
+11. What is the difference between ~PATH~ and ~CLASSPATH~ variables?
+
+    The ~PATH~ variable is an environment variable used by the operating system
+    to locate executables. The ~CLASSPATH~ variables are specific to Java and
+    used by java executable to locate ~.class~ files.
+
+12. What is the ~main~ method in Java?
+
+    The ~main~ method is the entry point to any standalone java application. Its
+    syntax is the following:
+
+    #+begin_src java
+      public static void main(String args[]){ ... }
+    #+end_src
+
+13. What is Overloading in Java?
+
+    When we have more than one method with the same name in a single class but
+    the arguments are different, then it is called *method overloading*.
+
+14. What is Overriding in Java?
+
+    When one class inherits from another, and we have two method with the same
+    name, one in the parent class and another in the child class. Then the
+    child's method is *overriding* the parent's method. We use the ~@Override~
+    annotation in the child class to specify this.
+
+15. Can we overload the ~main~ method?
+
+    Yes, we can have multiple ~main~ methods in a single class. However, when
+    executing the program, the JRE will look for the ~main~ method with the
+    following syntax:
+
+    #+begin_src java
+      public static void main(String args[]) {...}
+    #+end_src
+    
+16. Can we have multiple classes in a single java source file?
+
+    Yes, we can have multiples classes in the same java source file. However,
+    there can only be one ~public~ class in said file.
+
+17. What is a Java Package?
+
+    Java package is a method to group java classes. A java class fully
+    classified name contains the class name and the package that contains said
+    class. For example, in the classified name ~java.lang.Object~, ~Object~ is
+    the class name and ~java.lang~ the package.
+
+18. Which package is imported by default in any program?
+    
+    The ~java.lang~ package is imported by default.
+
+*** Access Modifiers and special keywords in Java
+
+1. What are access modifiers in Java?
+    
+    The access modifiers determine who are capable of accessing certain data
+    from the same package, the same family group of classes or even in the same
+    class.
+
+2. What does the ~public~ access modifier do?
+
+    The ~public~ access modifier can be used for classes and for attributes and
+    methods.
+
+    If a class is ~public~ then we can instantiate it from anywhere, that is,
+    any other class in any other packages.
+
+    When a ~public~ class is instantiated, we can access any of their ~public~
+    attributes and methods.
+
+3. What does the ~private~ access modifier do?
+
+    The ~private~ access modifier can be used for classes and for attributes and
+    methods.
+
+    A ~private~ class can only be inner or nested classes.
+
+    Attributed and methods with the ~private~ access modifier can only be
+    accessed by the same class, and thus, if we have an instance of said class,
+    we can't access its ~private~ attributes and methods.
+
+4. What does the ~protected~ access modifier do?
+
+    The ~protected~ access modifier can be used for classes and for attributes
+    and methods.
+
+    A ~protected~ class, method, or attribute can only be accessed by classes in
+    the same package or classes that extend said class.
+
+5. What does the ~default~ access modifier do?
+
+    The ~default~ access modifier can be used for classes and for variables and
+    methods.
+
+    Classes, methods, and attributes who have no specific access modifier are
+    considered as ~default~, and can only be accessed by classes found on the
+    same package.
+
+6. What is the ~final~ keyword?
+
+    The ~final~ keyword can be used on classes, methods, and attributed.
+
+    On a class that means that no other class can extend it. For example, the
+    ~String~ class is final and we can't extend it.
+
+    On a method, the classes that extend said class, its child classes, can't
+    override this method.
+
+    On an attribute, the attribute can only be assigned once. However the state
+    of the attribute can change. For example, we can assign a ~final~ variable
+    to an object only once but the object's attributes can change later on.
+
+7. What is the ~static~ keyword?
+
+    A ~static~ class is a class that is created inside another class, a nested
+    class, which has only access to static attributes and methods. It can access
+    static attributes and methods from the outer class, including ~private~.
+
+    A ~static~ attribute is one who is shared among all the class instances,
+    that is, all the objects from the same class share the same attribute and
+    value.
+
+    A ~static~ method can only access ~static~ variables, invoke ~static~
+    methods, and can be called without necessarily having an instance of a
+    class.
+
+8. What are ~static~ imports?
+
+    If a class has a ~static~ attribute, we can import directly without having
+    to import the whole class that contains said attribute.
+
+    #+begin_src java
+      import java.lang.Math.PI;
+    #+end_src
+
+9. What is a ~static~ block?
+
+    A ~static~ block is a group of statements that gets executed when the class
+    is loaded into memory by the Java ~ClassLoader~. It is used to initialize
+    ~static~ attributes of the class.
+
+*** Java's Interfaces
+
+1. What is an interface?
+
+   Interfaces in java provide a way to achieve *abstraction*, it is used to
+   define the methods that subclasses will implement. To create an interface we
+   must use the ~interface~ keyword. And to implement an interface the keyword
+   ~implements~ must be used.
+
+2. Can you implement methods in Java interface?
+
+   No, interfaces provide absolute abstraction and thus they can't have method
+   implementations.
+
+3. What keywords are by default bound to interface attributes?
+
+   Java interface attributes are by default ~public~, ~static~ and ~final~.
+
+4. What keywords are by default bound to interface methods?
+
+   By default any method found in an interface is ~abstract~, and ~public~.
+
+5. Can interfaces extend other classes?
+
+   An interface can only extend other interfaces. For example:
+
+   #+begin_src java
+     public interface A extends Clonable {...}
+   #+end_src
+
+6. Can an interface implement another interface?
+
+   No, they can't. An implementation, as the name implies, must implement the
+   methods defined in the interface, and this is not possible in interfaces.
+
+7. Can you implement multiple interfaces?
+
+   Yes, you can. As interfaces do not have implementations, then the we can
+   implement multiple interfaces even if they share the same name on a method,
+   thus avoiding the /Diamond Problem/.
+
+8. Give an example of a Java interface.
+   
+   For example, let's say que want to create a drawing consisting of multiple
+   shapes. Here we can create an interface ~Shape~ and define all the methods
+   that different types of ~Shape~ objects will implement. For simplicity, the
+   methods available are ~draw~, which draws the shape, and ~getArea~, which
+   returns the area of the shape.
+
+   #+begin_src java
+     public interface Shape {
+         public String LABEL="Shape";
+
+         void draw();
+
+         double getArea();
+     }
+   #+end_src
+
+9. Define a class that implements the previous interface.
+
+   #+begin_src java
+     public class Circle implements Shape {
+         private double radius;
+
+         public Circle(double r) { this.radius = r; }
+
+         @Override
+         public void draw() {
+             System.out.println("Drawing Circle...");
+         }
+
+         @Override
+         public double getArea() {
+             return Math.PI * this.radius * this.radius;
+         }
+
+         public double getRadius() { return this.radius; }
+     }
+   #+end_src
+
+10. What are the pros and cons of Java interfaces?
+
+    Pros: Interfaces provide a contract for all the implementation classes, that
+    is, classes that implement said interface must have a method implementation
+    for all of the methods found in the interface. We can also implement
+    multiple interfaces.
+
+    Cons: We can't remove or add any methods from the interface at later point
+    in time, so we must be careful when defining this methods. And if the
+    implementation classes have their own methods, we can't use them directly
+    because the type of the object is an interface that doesn't have method
+    implementations. To solve this we must use *typecasting*.
+
+    For example, given the previous example, to use the method ~getRadius()~ we
+    must typecast the object to be able to access it.
+
+    #+begin_src java
+      Shape shapeCircle = new Circle(3);
+      Circle circle = (Circle) shapeCircle;
+      circle.getRadius(); // 3
+    #+end_src
