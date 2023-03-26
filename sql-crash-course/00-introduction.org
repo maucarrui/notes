@@ -204,3 +204,176 @@ point has, and ~s~ is the number of digits the number of digits the number after
 the decimal point has. For example, ~float(4, 2)~ will be able to store numbers
 like 27.44 and 8.19, but the number 17.8675 would be rounded to 17.87, and the
 number 178.375 will return an error.
+
+**** Temporal Data
+
+When working with dates and/or times, this data in SQL is referred as
+/temporal/.  For example, a future date for a particular date, the date a
+customer's order was shipped, the date and time that user modified a particular
+row in a table, or an employer's birth date, they're all considered as /temporal
+data/.
+
+The following temporal data are supported by MySQL
+
+|-------------+---------------------+------------------------------------------------------|
+| Type        | Default format      | Allowable values                                     |
+|-------------+---------------------+------------------------------------------------------|
+| ~date~      | YYYY-MM-DD          | 1000-01-01 to 9999-12-31                             |
+| ~datetime~  | YYYY-MM-DD HH:MM:SS | 1000-01-01 00:00:00.0000 to 9999-12-31 23:59:59.9999 |
+| ~timestamp~ | YYYY-MM-DD HH:MM:SS | 1000-01-01 00:00:00.0000 to 2038-01-18 22:14:07.9999 |
+| ~year~      | YYYY                | 1901 to 2155                                         |
+| ~time~      | HHH:MM:SS           | -838:59:59.0000 to 838:59:59.0000                    |
+|-------------+---------------------+------------------------------------------------------|
+
+
+*** SQL Schema Statements
+
+**** Table Creation
+
+As we've mentioned before the ~CREATE~ statement is for creating a table,
+generally creating a table means defining the attributes (columns) that are
+related to an entity (rows). For example, the following statement creates a
+table to hold information about people:
+
+#+begin_src sql
+  CREATE TABLE person       
+      (person_id SMALLINT UNSIGNED,
+      fname VARCHAR(20),
+      lname VARCHAR(20),
+      eye_color CHAR(2),
+      birth_date DATE,
+      CONSTRAINT pk_person PRIMARY KEY (person_id)
+      );
+#+end_src
+
+***** Check Constraints
+
+There a different types of constraints. One, for example, is the *primary key
+constraint*, in which we define what column or columns will be considered as the
+primary key for the table. Another type of constraint is called *check
+constraints* which limits the possibles values for that particular column. MySQL
+allows a check constraint to be attached to a column definition, as in the
+following:
+
+#+begin_src sql
+          eye_color CHAR(2) CHECK (eye_color in ('BR', 'BL', 'GR')),
+#+end_src
+
+One small detail is that MySQL allows check constraints but does not enforce
+them, to enforce them we must use a data type called ~enum~ that merges the
+check constraint into a data type definition. Here's what the definition would
+look like:
+
+#+begin_src sql
+          eye_color ENUM('BR', 'BL', 'GR'),
+#+end_src
+
+***** Describing a table
+
+If you want to make sure a table exists, you can use the ~describe~ command to
+look at the table definition.
+
+***** What is a NULL value?
+
+In some cases, it is not possible or applicable to provide a value for a
+particular column in your table. For example, when adding data about a new
+customer order, the ~ship_date~ column can't yet be determined. In this case,
+the column is said to be /null/, which indicates the absence of a value.
+
+When designing a table, you may specify which columns are allowed to be null and
+which columns are not allowed to be null by adding the keyword ~not null~ after
+the type definition. For example:
+
+#+begin_src sql
+  CREATE TABLE person       
+      (person_id SMALLINT UNSIGNED NOT NULL,
+      fname VARCHAR(20) NOT NULL,
+      lname VARCHAR(20) NOT NULL,
+      eye_color CHAR(2),
+      birth_date DATE NOT NULL,
+      CONSTRAINT pk_person PRIMARY KEY (person_id)
+      );
+#+end_src
+
+***** Foreign Keys
+
+If the value of a column references another value in another table then we say
+that said value is a foreign key. For example if we define the following table:
+
+#+begin_src sql
+  CREATE TABLE favorite_food
+         (person_id SMALLINT UNSIGNED,
+         food VARCHAR(20),
+         CONSTRAINT pk_favorite_food PRIMARY KEY (person_id, food),
+         CONSTRAINT fk_fav_food_person_id FOREIGN KEY (person_id)
+         REFERENCES person (person_id)
+         );
+#+end_src
+
+Another type of constraint is the *foreign key constraint*. This constraints the
+values of the column in the table to only include the values found on the
+specified column of the referencing table; for example the ~person_id~ column in
+the ~favorite_food~ table includes only values found in the ~person_id~ column
+of the ~person~ table.
+
+**** Populating and Modifying Tables
+***** Inserting Data
+
+Let's continue with our example of ~person~ and ~favorite_food~ tables.  To
+insert data into any table we must use the ~insert~ statement, which consists of
+three main components:
+
++ The name of the table into which to add the data
++ The names of the columns in the table to be populated.
++ The values with which to populate the columns.
+
+As we've seen before, some values can be null and some other can't. Thus it's
+not necessary to include all columns when inserting data into a table; except if
+all columns can't be null. Thus the following statement creates a row in the
+~person~ table for William Turner:
+
+#+begin_src sql
+  INSERT INTO person
+         (person_id, fname, lname, eye_color, birth_date)
+         VALUES (null, 'William', 'Turner', null, '1972-05-27');
+#+end_src
+
+****** Generating Primary Keys
+
+Now, before adding data into our table its good to consider how to generate the
+value related to a primary key in the table. We could look at the largest value
+currently in the table and add one, or we can let the database server provide
+the value for us. The latter is the safest option. All database servers today
+provide an efficient way of generating number keys. For example, Oracle Database
+has a separate schema object known as /sequence/; in the case of MySQL we only
+need to turn on the ~auto-increment~ feature for the primary key column.
+
+#+begin_src sql
+  person_id SMALLINT UNSIGNED AUTO_INCREMENT,
+#+end_src
+
+
+***** Updating Data
+
+Let's say that at the moment of creation we didn't know the eye color of
+William, but now we know that he has green eyes. We need to modify the row that
+corresponds to William and to do so we use the ~update~ statement. For the
+previous example, the following statement is required:
+
+#+begin_src sql
+  UPDATE person
+  SET eye_color = 'GR' WHERE fname = 'William' AND lname = 'Turner';
+#+end_src
+
+In this case the ~where~ clause helps us to modify only the tables we're
+interested in.
+
+***** Deleting Data
+
+When needing to delete certain information or data of a table the statement
+~delete~ is used. For example, if for some reason William never existed, then
+the statement to remove William from the ~person~ table is:
+
+#+begin_src sql
+  DELETE FROM person WHERE fname = 'William' AND lname = 'Turner';
+#+end_src
