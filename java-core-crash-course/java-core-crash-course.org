@@ -308,3 +308,167 @@
       Circle circle = (Circle) shapeCircle;
       circle.getRadius(); // 3
     #+end_src
+
+11. What's a Marker Interface?
+
+    Marker interfaces are interfaces with no methods, and they're used to force
+    some functionality in implementing classes by Java. Some examples are
+    ~Serializable~ and ~Clonable~.
+    
+*** Java's abstract classes
+
+1. What's an abstract class in Java?
+
+   An abstract class is similar to an interface, is an abstraction of a
+   class. However, contrary to interfaces, abstract classes can have method
+   implementations. The ~abstract~ keyword is used to create an abstract class
+   and method.
+
+2. Can you instantiate an abstract class?
+
+   No, abstract classes can't be instantiated as they're used to provide a base
+   for subclasses to extend, and implement abstract methods and override or use
+   the implemented methods in the abstract class.
+
+3. Can ~abstract~ methods have an implementation?
+
+   No, they can only have the method signature.
+
+4. Is it necessary for ~abstract~ classes to have ~abstract~ methods?
+
+   No, we can define an ~abstract~ class without having ~abstract~ methods.
+
+5. When is it recommended to use an interface instead of an ~abstract~ class?
+
+   If our ~abstract~ class has no method implementations, then it's better to
+   use an interface.
+
+6. Can an ~abstract~ class implement an interface?
+
+   Yes, a Java ~abstract~ class can implement interfaces without even providing
+   the implementation of the interface methods.
+
+7. Can a class have ~abstract~ methods and not be an ~abstract~ class?
+
+   No, if the class has an ~abstract~ method then it's necessary for the class
+   to also be ~abstract~, otherwise it won't compile.
+
+8. Can an ~abstract~ class extend other classes?
+
+   An ~abstract~ class can extend non-~abstract~ classes like
+   ~java.lang.Object~, and it can also extend other ~abstract~ classes
+
+9. Can an ~abstract~ class have a ~main~ method?
+
+   Yes, we can even run an ~abstract~ class like any other class if it has a
+   ~main~ method.
+
+*** Java's Wrappers
+
+1. What's a Wrapper class?
+
+   A wrapper class is an object representation of a primitive type in java.
+   All the wrapper classes in java are immutable and final.
+
+2. Which wrapper classes are available in Java?
+
+   |----------------+---------------|
+   | Primitive Type | Wrapper Class |
+   |----------------+---------------|
+   | ~boolean~      | ~Boolean~     |
+   | ~char~         | ~Character~   |
+   | ~byte~         | ~Byte~        |
+   | ~short~        | ~Short~       |
+   | ~int~          | ~Integer~     |
+   | ~long~         | ~Long~        |
+   | ~float~        | ~Float~       |
+   | ~double~       | ~Double~      |
+   |----------------+---------------|
+
+3. What is Auto-boxing?
+
+   The automatic conversion of primitive data type into its corresponding
+   wrapper class is known as auto-boxing.
+
+   #+begin_src java
+     public class WrapperExample {
+         public static void main(String args[]) {
+             int i = 20;    // Primitive type.
+             Integer j = i; // Autoboxing.
+         }
+     }
+   #+end_src
+
+4. What is Unboxing?
+
+   The automatic conversion of the wrapper class into its corresponding
+   primitive type is known as unboxing.
+
+   #+begin_src java
+     public class WrapperExample {
+         public static void main(String args[]) {
+             Integer i = new Integer(3); // Wrapper.
+             int j = i;                  // Unboxing.
+         }
+     }
+   #+end_src
+
+*** Java's Enum
+
+1. What is an Enum in Java?
+
+   Enum is a type in Java whose fields consist of a fixed set of constants. The
+   keyword ~enum~ is used to create an enum type, and similar to the class. Enum
+   constants are implicitly ~static~ and ~final~.
+
+2. Give an example of an Enum in Java.
+
+   #+begin_src java
+     public enum ThreadStates {
+         START,
+         RUNNING,
+         WAITING,
+         DEAD;
+     }
+   #+end_src
+
+3. Can ~enum~ classes extend other classes?
+
+   No, we can't extend any class in ~enum~ as it implicitly extends
+   ~java.lang.Enum~ class that extends ~java.lang.Object~ and implements
+   ~Serializable~ and ~Comparable~ interfaces.
+
+4. Can ~enum~ classes implement interfaces?
+
+   Yes, ~enum~ classes can implement interfaces.
+
+5. Can you initialize an ~enum~ class?
+
+   Yes, however all of its constructors are ~private~, so we can't use the ~new~
+   operator.
+
+*** Java's annotations
+
+1. What are java's annotations?
+
+   Java annotations provide information about the code and they have no direct
+   effect on the code they annotate. Annotations are metadata about the program
+   embedded in the program itself.
+
+2. What are some of the built-in annotations in Java?
+
+   + ~@Override~
+
+     When we want to override a method of the superclass we should use this
+     annotation to inform the compiler that we're overriding a method. This way,
+     if the superclass method is removed or changed, the compiler will show an
+     error message.
+
+   + ~@Deprecated~
+
+     When we want the compiler to know that a method is deprecated.
+
+   + ~@SupressWarnings~
+
+     This is just to tell the compiler to ignore specific warnings they produce.
+
