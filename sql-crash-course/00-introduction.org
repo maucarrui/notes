@@ -352,7 +352,6 @@ need to turn on the ~auto-increment~ feature for the primary key column.
   person_id SMALLINT UNSIGNED AUTO_INCREMENT,
 #+end_src
 
-
 ***** Updating Data
 
 Let's say that at the moment of creation we didn't know the eye color of
